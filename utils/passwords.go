@@ -1,8 +1,6 @@
 package utils
 
 import (
-	"fmt"
-
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -19,13 +17,8 @@ func EncryptPassword(password string) (string, error) {
 }
 
 // VerifyPassword checks if the provided password matches the stored hash
-func VerifyPassword(inputPassword, storedHash string) error {
+func VerifyPassword(inputPassword, storedHash string) bool {
 	// Compare the input password with the stored hash
 	err := bcrypt.CompareHashAndPassword([]byte(storedHash), []byte(inputPassword))
-	if err != nil {
-		return fmt.Errorf("password verification failed: %v", err)
-	}
-
-	// Passwords match
-	return nil
+	return err == nil
 }
