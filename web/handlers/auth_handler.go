@@ -8,6 +8,7 @@ import (
 
 	"github.com/joe-l-mathew/GoFileVault/models"
 	"github.com/joe-l-mathew/GoFileVault/pkg/db"
+	"github.com/joe-l-mathew/GoFileVault/utils"
 )
 
 type UserCreateAccount struct {
@@ -29,11 +30,16 @@ func CreateAccount(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error decoding request body", http.StatusBadRequest)
 		return
 	}
-	fmt.Println("call reached here")
+	
+	encrypetedPassword, hashErr := utils.EncryptPassword(signupData.Password)
+	if hashErr != nil {
+		http.Error(w, "Error decoding request body", http.StatusBadRequest)
+		return
+	}
 
 	model := models.User{
 		Name:     signupData.Name,
-		Password: signupData.Password,
+		Password: encrypetedPassword,
 		Email:    signupData.EmailId,
 	}
 	if err = db.DB.Create(&model).Error; err != nil {
