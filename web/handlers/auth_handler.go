@@ -2,23 +2,45 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
+	"io"
 	"net/http"
+
+	"github.com/joe-l-mathew/GoFileVault/models"
+	"github.com/joe-l-mathew/GoFileVault/pkg/db"
 )
 
-func AuthHandlers(w http.ResponseWriter, r *http.Request) {
-	data := map[string]string{
-		"name": "joel",
-	}
+type UserCreateAccount struct {
+	Name     string `json:"name"`
+	EmailId  string `json:"email"`
+	Password string `json:"password"`
+}
 
-	// Convert data to JSON
-	userJSON, err := json.Marshal(data)
+func CreateAccount(w http.ResponseWriter, r *http.Request) {
+	body, err := io.ReadAll(r.Body)
 	if err != nil {
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		http.Error(w, "Error reading request body", http.StatusBadRequest)
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
+	var signupData UserCreateAccount
+	err = json.Unmarshal(body, &signupData)
+	if err != nil {
+		http.Error(w, "Error decoding request body", http.StatusBadRequest)
+		return
+	}
+	fmt.Println("call reached here")
 
-	// Write the JSON response
-	w.Write(userJSON)
+	model := models.User{
+		Name:     signupData.Name,
+		Password: signupData.Password,
+		Email:    signupData.EmailId,
+	}
+	if err = db.DB.Create(&model).Error; err != nil {
+		http.Error(w, "Error creating user", http.StatusBadRequest)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Succesfuly created user"))
+
 }

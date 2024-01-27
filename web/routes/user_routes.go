@@ -8,5 +8,5 @@ import (
 )
 
 func UserRoute(router *mux.Router) {
-	router.HandleFunc("/", handlers.AuthHandlers).Methods(http.MethodGet)
+	router.HandleFunc("/signup", handlers.CreateAccount).Methods(http.MethodPost)
 }
