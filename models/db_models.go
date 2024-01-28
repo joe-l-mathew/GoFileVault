@@ -8,3 +8,9 @@ type User struct {
 	Password string `json:"-"`
 	Email    string `gorm:"unique"`
 }
+
+type UserFiles struct {
+	gorm.Model
+	FileName string
+	Filetype string
+}

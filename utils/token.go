@@ -13,7 +13,7 @@ var secretKey = []byte("kjhv9ew87itot7t404894tuhergg8732234tvf")
 func GenerateToken(id uint) (string, error) {
 	// Set token claims
 	claims := jwt.MapClaims{
-		"username": id,
+		"userId": id,
 		"exp":      time.Now().Add(time.Hour * 1).Unix(), // Token expires in 1 hour
 	}
 
