@@ -2,10 +2,13 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
+	"os"
 
 	"github.com/joe-l-mathew/GoFileVault/models"
+	"github.com/joe-l-mathew/GoFileVault/pkg"
 	"github.com/joe-l-mathew/GoFileVault/pkg/db"
 	"github.com/joe-l-mathew/GoFileVault/utils"
 	"gorm.io/gorm"
@@ -48,10 +51,12 @@ func CreateAccount(w http.ResponseWriter, r *http.Request) {
 		Password: encrypetedPassword,
 		Email:    signupData.EmailId,
 	}
+
 	if err = db.DB.Create(&model).Error; err != nil {
 		http.Error(w, "Error creating user", http.StatusBadRequest)
 		return
 	}
+	os.MkdirAll(fmt.Sprint(pkg.StorageName, "/", model.ID), 0755)
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Succesfuly created user"))
 

@@ -11,7 +11,6 @@ import (
 
 func AuthenticateMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println(r.URL.Path)
 		if r.URL.Path == "/signup" || r.URL.Path == "/signin" {
 			next.ServeHTTP(w, r)
 			return
@@ -23,6 +22,7 @@ func AuthenticateMiddleware(next http.Handler) http.Handler {
 		}
 
 		claims, err := utils.VerifyToken(tokenString)
+		fmt.Println("clames", claims["userId"])
 		if err != nil {
 			http.Error(w, "Unauthorized", http.StatusUnauthorized)
 			return
@@ -33,7 +33,6 @@ func AuthenticateMiddleware(next http.Handler) http.Handler {
 
 		// Set the authenticated user in the request context
 		ctx := context.WithValue(r.Context(), "userId", claims["userId"])
-		fmt.Println("User id is", claims["userId"])
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }

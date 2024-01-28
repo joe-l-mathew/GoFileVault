@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/joe-l-mathew/GoFileVault/pkg"
 	"github.com/joe-l-mathew/GoFileVault/pkg/db"
 	"github.com/joe-l-mathew/GoFileVault/web/middleware"
 	"github.com/joe-l-mathew/GoFileVault/web/routes"
@@ -11,6 +12,7 @@ import (
 
 func main() {
 	db.InitDb()
+	pkg.InitLocalDirectory()
 	router := mux.NewRouter()
 	router.Use(middleware.AuthenticateMiddleware)
 	routes.UserRoute(router)

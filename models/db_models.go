@@ -11,6 +11,8 @@ type User struct {
 
 type UserFiles struct {
 	gorm.Model
+	UserId   string
 	FileName string
 	Filetype string
+	FilePath string
 }
